@@ -43,3 +43,22 @@ steps:
     args:
     - 'push'
     - 'us-central1-docker.pkg.dev/$PROJECT_ID/nodejs/nodejs-image:$SHORT_SHA'
+
+# This step deploys the new version of our container image
+# in the hello-cloudbuild Kubernetes Engine cluster.
+
+  - name: 'gcr.io/cloud-builders/kubectl'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        # Authenticate with the Kubernetes cluster
+        gcloud container clusters get-credentials gkecluster --zone us-central1-a --project kubernetes2-410610
+
+        # Install Helm
+        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+        chmod +x get_helm.sh
+        ./get_helm.sh
+
+        # Run Helm command after installation
+        helm upgrade --install node-app ./nodejs-application -n nodejs --create-namespace  --set image.tag=$SHORT_SHA
