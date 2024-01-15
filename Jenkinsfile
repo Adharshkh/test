@@ -1,113 +1,94 @@
 pipeline {
     agent any
-    
     environment {
+        IMAGE = 'nodejs'
+        TAG = "${BUILD_NUMBER}"
         PROJECT_ID = 'kubernetes2-410610'
-        REGISTRY = 'gcr.io'
-        APP_NAME = 'nodejs2'
-        HELM_RELEASE_NAME = 'nodejs2'
+        CLUSTER_NAME = 'gkecluster'
+        LOCATION = 'us-central1-a'
+        CREDENTIALS_ID = 'e8784de2-a680-431f-b817-a46befa6ea70'
+        HELM_CHART_PATH = 'nodels-application/'
+        HELM_RELEASE_NAME = 'nodejs'
+        HELM_NAMESPACE = 'nodejs'
     }
-    
     stages {
-        stage('Checkout') {
-            steps {
-                // Checkout the source code from GitHub
-                checkout scm
+        stage('Checkout from Git'){
+            steps{
+                git branch: 'main', url: ''
+            }
+        }
+        stage("Docker Build"){
+            steps{
+                script{
+                    withDockerRegistry(credentialsId: '9181b467-36db-4aea-bc62-816143482973', toolName: 'docker'){   
+                        sh "sudo docker build -t ${IMAGE} ."
+                    }
+                }
             }
         }
 
-     stage('Build docker image') {
-    when { expression { true } }
-      steps{
-        container('docker'){
-          dir('Backend/MobileAPI') {
-          echo 'Build docker image Start'
-          sh 'pwd'
-          sh 'docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .'
-          withDockerRegistry([credentialsId: "gcr:${PROJECT}", url: "https://us.gcr.io"]) {
-            sh 'docker push ${IMAGE_NAME}:${IMAGE_TAG}'
-          }
-          sh 'docker rmi ${IMAGE_NAME}:${IMAGE_TAG}'
-          echo 'Build docker image Finish'
-          }
+        stage(' Trivy Scan') {
+            steps {
+                //  trivy output template 
+                sh 'sudo curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl > html.tpl'
+
+                // Scan all vuln levels
+                sh 'sudo mkdir -p reports'
+                sh 'sudo trivy image --format template --template @./html.tpl -o reports/trivy-report.html ${IMAGE}:latest'
+                publishHTML target : [
+                    allowMissing: true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'reports',
+                    reportFiles: 'trivy-report.html',
+                    reportName: 'Trivy Scan',
+                    reportTitles: 'Trivy Scan'
+                ]
+
+                // Scan again and fail on CRITICAL vulns
+                // sh 'trivy image --ignore-unfixed --vuln-type os,library --exit-code 1 --severity CRITICAL ${IMAGE}:latest '
+
+            }
         }
-      }
+        stage("Docker Push"){
+            steps{
+                script{
+                    withDockerRegistry(credentialsId: '9181b467-36db-4aea-bc62-816143482973', toolName: 'docker'){   
+                        sh "sudo docker tag ${IMAGE} abdulfayis/${IMAGE}:${TAG} "
+                        sh "sudo docker push abdulfayis/${IMAGE}:${TAG} "
+                        sh "sudo docker tag ${IMAGE} abdulfayis/${IMAGE}:latest "
+                        sh "sudo docker push abdulfayis/${IMAGE}:latest "
+                    }
+                }
+            }
+        }
+        stage("Docker Clean up "){
+            steps{
+                 sh 'echo " cleaning Docker Images"'
+                 sh 'sudo docker rmi -f \$(sudo docker images -q)'
+            }
+        }
+        stage("Helm install "){
+            steps{
+                 sh "curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3"
+                 sh "chmod 700 get_helm.sh"
+                 sh "./get_helm.sh"
+            }
+        }
+        stage('GKE Authentication') {
+            steps{
+                    sh "gcloud container clusters get-credentials ${CLUSTER_NAME} --zone ${LOCATION} --project ${PROJECT_ID}"
+                
+            }
+        }
+        stage('Deploy Helm Chart') {
+            steps {
+                script {
+                    sh 'kubectl create ns ${HELM_NAMESPACE} || echo "namespace already created" '
+                    sh "helm upgrade --install ${HELM_RELEASE_NAME} ${HELM_CHART_PATH} --set image.tag=${TAG} --namespace=${HELM_NAMESPACE} --wait"
+                }
+            }
+        }
+        
     }
-    // Rest of your stages and post section can be added here...
-
-    // Uncomment and complete the remaining stages and post section according to your requirements.
 }
-}
-
-// pipeline {
-//     agent any
-    
-//     environment {
-//         PROJECT_ID = 'kubernetes2-410610'
-//         REGISTRY = 'gcr.io'
-//         APP_NAME = 'nodejs2'
-//         HELM_RELEASE_NAME = 'nodejs2'
-//     }
-    
-//     stages {
-//         stage('Checkout') {
-//             steps {
-//                 // Checkout the source code from GitHub
-//                 checkout scm
-//             }
-//         }
-//     }
-//        stage('Build image') {
-//           app = docker.build("us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2")
-//         }
-//         stage('Push image') {
-//           docker.withRegistry('https://eu.gcr.io', 'gcr:e8784de2-a680-431f-b817-a46befa6ea70') {
-//             app.push("${env.BUILD_NUMBER}")
-//             app.push("latest")
-//   }
-// // stage('Docker Build') {
-// //     	agent any
-// //       steps {
-// //       	sh 'sudo -u jenkins docker build -f Dockerfile . '
-// //       }
-// //     }
-
-//         // stage('Build and Push Docker Image') {
-//         //     steps {
-//         //         // Build Docker image
-//         //         script {
-//         //             docker.build("us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2:${env.BUILD_NUMBER}" , '-f Dockerfile .')
-//         //         }
-
-//         //         // Push Docker image to Google Artifact Registry
-//         //         script {
-//         //             docker.withRegistry('https://gcr.io', 'kubernetes2-410610') {
-//         //                 docker.image("${REGISTRY}/${PROJECT_ID}/${APP_NAME}:${env.BUILD_NUMBER}").push()
-//         //             }
-//         //         }
-//     //     //     }
-//     //     // }
-
-//     //     stage('Deploy Helm Chart') {
-//     //         steps {
-//     //             // Authenticate with Google Cloud
-//     //             script {
-//     //                 withCredentials([file(credentialsId: 'e8784de2-a680-431f-b817-a46befa6ea70', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
-//     //                     sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
-//     //                 }
-//     //             }
-
-//     //             // Deploy Helm chart
-//     //             script {
-//     //                 sh "helm upgrade --install ${HELM_RELEASE_NAME} -n nodejs --create-namespace nodejs-application/"
-//     //             }
-//     //         }
-//     //     }
-//     // }
-
-//     // post {
-//     //     success {
-//     //         echo 'Build, push, and deployment successful!'
-//     //     }
-//     // }
-// }
