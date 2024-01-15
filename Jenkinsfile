@@ -21,7 +21,7 @@ pipeline {
             steps{ 
                 script{
                     withDockerRegistry(credentialsId: 'e37672bf-062d-4103-af96-bfe6ad538769', toolName: 'docker'){   
-                        sh "docker build -t Dockerfile ."
+                        sh "sudo -u jenkins docker build -t Dockerfile ."
                     }
                 }
             }
@@ -54,10 +54,10 @@ pipeline {
             steps{
                 script{
                     withDockerRegistry(credentialsId: 'e37672bf-062d-4103-af96-bfe6ad538769', toolName: 'docker'){   
-                        sh "sudo docker tag ${IMAGE} abhin86/${IMAGE}:${TAG} "
-                        sh "sudo docker push abhin86/${IMAGE}:${TAG} "
-                        sh "sudo docker tag ${IMAGE} abdulfayis/${IMAGE}:latest "
-                        sh "sudo docker push abhin86/${IMAGE}:latest "
+                        sh "sudo -u jenkins docker tag ${IMAGE} abhin86/${IMAGE}:${TAG} "
+                        sh "sudo -u jenkins docker push abhin86/${IMAGE}:${TAG} "
+                        sh "sudo -u jenkins docker tag ${IMAGE} abdulfayis/${IMAGE}:latest "
+                        sh "sudo -u jenkins docker push abhin86/${IMAGE}:latest "
                     }
                 }
             }
@@ -65,7 +65,7 @@ pipeline {
         stage("Docker Clean up "){
             steps{
                  sh 'echo " cleaning Docker Images"'
-                 sh 'sudo docker rmi -f \$(sudo docker images -q)'
+                 sh 'sudo -u jenkins docker rmi -f \$(sudo docker images -q)'
             }
         }
         stage("Helm install "){
