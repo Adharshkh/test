@@ -14,50 +14,50 @@ pipeline {
     stages {
         stage('Checkout from Git'){
             steps{
-                git branch: 'main', url: ''
+                git branch: 'main', url: 'https://github.com/Abhin86/Nodejs-Application.git'
             }
         }
         stage("Docker Build"){
             steps{
                 script{
-                    withDockerRegistry(credentialsId: '9181b467-36db-4aea-bc62-816143482973', toolName: 'docker'){   
+                    withDockerRegistry(credentialsId: 'e37672bf-062d-4103-af96-bfe6ad538769', toolName: 'docker'){   
                         sh "sudo docker build -t ${IMAGE} ."
                     }
                 }
             }
         }
 
-        stage(' Trivy Scan') {
-            steps {
-                //  trivy output template 
-                sh 'sudo curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl > html.tpl'
+        // stage(' Trivy Scan') {
+        //     steps {
+        //         //  trivy output template 
+        //         sh 'sudo curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl > html.tpl'
 
-                // Scan all vuln levels
-                sh 'sudo mkdir -p reports'
-                sh 'sudo trivy image --format template --template @./html.tpl -o reports/trivy-report.html ${IMAGE}:latest'
-                publishHTML target : [
-                    allowMissing: true,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'reports',
-                    reportFiles: 'trivy-report.html',
-                    reportName: 'Trivy Scan',
-                    reportTitles: 'Trivy Scan'
-                ]
+        //         // Scan all vuln levels
+        //         sh 'sudo mkdir -p reports'
+        //         sh 'sudo trivy image --format template --template @./html.tpl -o reports/trivy-report.html ${IMAGE}:latest'
+        //         publishHTML target : [
+        //             allowMissing: true,
+        //             alwaysLinkToLastBuild: true,
+        //             keepAll: true,
+        //             reportDir: 'reports',
+        //             reportFiles: 'trivy-report.html',
+        //             reportName: 'Trivy Scan',
+        //             reportTitles: 'Trivy Scan'
+        //         ]
 
-                // Scan again and fail on CRITICAL vulns
-                // sh 'trivy image --ignore-unfixed --vuln-type os,library --exit-code 1 --severity CRITICAL ${IMAGE}:latest '
+        //         // Scan again and fail on CRITICAL vulns
+        //         // sh 'trivy image --ignore-unfixed --vuln-type os,library --exit-code 1 --severity CRITICAL ${IMAGE}:latest '
 
-            }
-        }
+        //     }
+        // }
         stage("Docker Push"){
             steps{
                 script{
-                    withDockerRegistry(credentialsId: '9181b467-36db-4aea-bc62-816143482973', toolName: 'docker'){   
-                        sh "sudo docker tag ${IMAGE} abdulfayis/${IMAGE}:${TAG} "
-                        sh "sudo docker push abdulfayis/${IMAGE}:${TAG} "
+                    withDockerRegistry(credentialsId: 'e37672bf-062d-4103-af96-bfe6ad538769', toolName: 'docker'){   
+                        sh "sudo docker tag ${IMAGE} abhin86/${IMAGE}:${TAG} "
+                        sh "sudo docker push abhin86/${IMAGE}:${TAG} "
                         sh "sudo docker tag ${IMAGE} abdulfayis/${IMAGE}:latest "
-                        sh "sudo docker push abdulfayis/${IMAGE}:latest "
+                        sh "sudo docker push abhin86/${IMAGE}:latest "
                     }
                 }
             }
