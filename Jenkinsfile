@@ -37,6 +37,7 @@ pipeline {
 
     // Uncomment and complete the remaining stages and post section according to your requirements.
 }
+}
 
 // pipeline {
 //     agent any
