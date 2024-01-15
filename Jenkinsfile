@@ -21,8 +21,7 @@ stage('Docker Build') {
       	sh 'docker build us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2:${env.BUILD_NUMBER} -f Dockerfile . '
       }
     }
-  }
-}
+
         // stage('Build and Push Docker Image') {
         //     steps {
         //         // Build Docker image
