@@ -16,26 +16,22 @@ pipeline {
             }
         }
 
-        stage('Build image') {
-            steps {
-                script {
-                    // Build Docker image
-                    app = docker.build("us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2")
-                }
-            }
+     stage('Build docker image') {
+    when { expression { true } }
+      steps{
+        container('docker'){
+          dir('Backend/MobileAPI') {
+          echo 'Build docker image Start'
+          sh 'pwd'
+          sh 'docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .'
+          withDockerRegistry([credentialsId: "gcr:${PROJECT}", url: "https://us.gcr.io"]) {
+            sh 'docker push ${IMAGE_NAME}:${IMAGE_TAG}'
+          }
+          sh 'docker rmi ${IMAGE_NAME}:${IMAGE_TAG}'
+          echo 'Build docker image Finish'
+          }
         }
-
-        stage('Push image') {
-            steps {
-                script {
-                    // Push Docker image to Google Artifact Registry
-                    docker.withRegistry('https://eu.gcr.io', 'gcr:e8784de2-a680-431f-b817-a46befa6ea70') {
-                        app.push("${env.BUILD_NUMBER}")
-                        app.push("latest")
-                    }
-                }
-            }
-        }
+      }
     }
     // Rest of your stages and post section can be added here...
 
