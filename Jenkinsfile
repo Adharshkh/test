@@ -24,7 +24,7 @@ pipeline {
                     }
                 }
             }
-        }
+        
 
         // stage(' Trivy Scan') {
         //     steps {
@@ -88,5 +88,5 @@ pipeline {
                 }
             }
         }
-        
+    }
 }
