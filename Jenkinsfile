@@ -64,9 +64,9 @@ pipeline {
     //     }
     // }
 
-    post {
-        success {
-            echo 'Build, push, and deployment successful!'
-        }
-    }
+    // post {
+    //     success {
+    //         echo 'Build, push, and deployment successful!'
+    //     }
+    // }
 }
