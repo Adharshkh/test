@@ -15,19 +15,18 @@ pipeline {
             }
         }
       }
-  // stages {
-  //   stage('Pull Git'){
-  //     when { expression { true } }
-  //     steps{
-  //       checkout scm
-  //     }
-  //   }
-  // }
+  stages {
+    stage('Pull Git'){
+      when { expression { true } }
+      steps{
+        checkout scm
+      }
+    }
+  }
     stage('Build docker image') {
     when { expression { true } }
       steps{
         container('docker'){
-          dir('Backend Net/MyDotnet') {
             echo 'Build docker image Start'
             sh 'pwd'
             sh 'docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .'
