@@ -21,7 +21,7 @@ pipeline {
             steps{ 
                 script{
                     withDockerRegistry(credentialsId: 'e37672bf-062d-4103-af96-bfe6ad538769', toolName: 'docker'){   
-                        sh "sudo docker build -t Dockerfile ."
+                        sh "docker build -t Dockerfile ."
                     }
                 }
             }
