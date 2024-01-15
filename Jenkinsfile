@@ -20,7 +20,7 @@ pipeline {
             steps {
                 // Build Docker image
                 script {
-                    docker.build("us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2:${env.BUILD_NUMBER}")
+                    docker.build("us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2:${env.BUILD_NUMBER}" , '-f Dockerfile .')
                 }
 
                 // Push Docker image to Google Artifact Registry
