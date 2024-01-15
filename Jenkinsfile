@@ -15,6 +15,7 @@ pipeline {
                 checkout scm
             }
         }
+    }
        stage('Build image') {
           app = docker.build("us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2")
         }
