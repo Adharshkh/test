@@ -18,7 +18,7 @@ pipeline {
 stage('Docker Build') {
     	agent any
       steps {
-      	sh 'docker build us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2:${env.BUILD_NUMBER} -f Dockerfile . '
+      	sh 'docker build -f Dockerfile . '
       }
     }
 
