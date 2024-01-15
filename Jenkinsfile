@@ -18,7 +18,7 @@ pipeline {
 stage('Docker Build') {
     	agent any
       steps {
-      	sh 'docker build -f Dockerfile . '
+      	sh 'sudo -u jenkins docker build -f Dockerfile . '
       }
     }
 
