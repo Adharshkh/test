@@ -15,13 +15,13 @@ pipeline {
                 checkout scm
             }
         }
-   stage('Build image') {
-  app = docker.build("us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2")
-}
-stage('Push image') {
-  docker.withRegistry('https://eu.gcr.io', 'gcr:e8784de2-a680-431f-b817-a46befa6ea70') {
-    app.push("${env.BUILD_NUMBER}")
-    app.push("latest")
+       stage('Build image') {
+          app = docker.build("us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2")
+        }
+        stage('Push image') {
+          docker.withRegistry('https://eu.gcr.io', 'gcr:e8784de2-a680-431f-b817-a46befa6ea70') {
+            app.push("${env.BUILD_NUMBER}")
+            app.push("latest")
   }
 // stage('Docker Build') {
 //     	agent any
@@ -69,4 +69,3 @@ stage('Push image') {
         }
     }
 }
-    }
