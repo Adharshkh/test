@@ -20,8 +20,7 @@ pipeline {
         stage("Docker Build"){
             steps{ 
                 script{
-                    withDockerRegistry(credentialsId: 'e37672bf-062d-4103-af96-bfe6ad538769', toolName: 'docker'){   
-                        sh "sudo -u jenkins docker build -t Dockerfile ."
+                dockerImage = docker.build("abhin86/nodejs:${env.BUILD_NUMBER}")
                     }
                 }
             }
