@@ -6,7 +6,7 @@ pipeline {
         PROJECT_ID = 'kubernetes2-410610'
         CLUSTER_NAME = 'gkecluster'
         LOCATION = 'us-central1-a'
-        CREDENTIALS_ID = 'e8784de2-a680-431f-b817-a46befa6ea70'
+        CREDENTIALS_ID = '220d6130-a4a6-4bf0-b696-3785b8ae3321'
         HELM_CHART_PATH = 'nodels-application/'
         HELM_RELEASE_NAME = 'nodejs'
         HELM_NAMESPACE = 'nodejs'
