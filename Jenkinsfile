@@ -14,7 +14,7 @@ pipeline {
         checkout scm
       }
     }
-
+  }
 //     stage('Build docker image') {
 //     when { expression { true } }
 //       steps{
