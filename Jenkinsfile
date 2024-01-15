@@ -69,3 +69,4 @@ stage('Push image') {
         }
     }
 }
+    }
