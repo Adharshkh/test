@@ -1,43 +1,57 @@
 pipeline {
-  agent any
-  environment {
-    PROJECT = "kubernetes2-410610"
-    APP_NAME = "nodejs-app"
-    REPO_NAME = "nodejs2"
-    REPO_LOCATION = "us-central1"
-    IMAGE_NAME = "${REPO_LOCATION}-docker.pkg.dev/${PROJECT}/${REPO_NAME}/${APP_NAME}"
-  }
-
-      stages {
-        stage('Git checkout') {
+    agent any
+    
+    environment {
+        PROJECT_ID = 'kubernetes2-410610'
+        REGISTRY = 'gcr.io'
+        APP_NAME = 'nodejs2'
+        HELM_RELEASE_NAME = 'nodejs2'
+    }
+    
+    stages {
+        stage('Checkout') {
             steps {
-                git branch: 'main', credentialsId: '220d6130-a4a6-4bf0-b696-3785b8ae3321', url: 'https://github.com/Abhin86/Nodejs-Application'
+                // Checkout the source code from GitHub
+                checkout scm
             }
         }
-      }
-  stages {
-    stage('Pull Git'){
-      when { expression { true } }
-      steps{
-        checkout scm
-      }
+
+        stage('Build and Push Docker Image') {
+            steps {
+                // Build Docker image
+                script {
+                    docker.build("${REGISTRY}/${PROJECT_ID}/${APP_NAME}:${env.BUILD_NUMBER}")
+                }
+
+                // Push Docker image to Google Artifact Registry
+                script {
+                    docker.withRegistry('https://gcr.io', 'kubernetes2-410610') {
+                        docker.image("${REGISTRY}/${PROJECT_ID}/${APP_NAME}:${env.BUILD_NUMBER}").push()
+                    }
+                }
+            }
+        }
+
+        stage('Deploy Helm Chart') {
+            steps {
+                // Authenticate with Google Cloud
+                script {
+                    withCredentials([file(credentialsId: 'e8784de2-a680-431f-b817-a46befa6ea70', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                        sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
+                    }
+                }
+
+                // Deploy Helm chart
+                script {
+                    sh "helm upgrade --install ${HELM_RELEASE_NAME} -n nodejs --create-namespace ."
+                }
+            }
+        }
     }
-  }
-    stage('Build docker image') {
-    when { expression { true } }
-      steps{
-        container('docker'){
-            echo 'Build docker image Start'
-            sh 'pwd'
-            sh 'docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .'
-//             withCredentials([file(credentialsId: "${PROJECT}_artifacts", variable: 'GCR_CRED')]){
-//               sh 'cat "${GCR_CRED}" | docker login -u _json_key_base64 --password-stdin https://"${REPO_LOCATION}"-docker.pkg.dev'
-//               sh 'docker push ${IMAGE_NAME}:${IMAGE_TAG}'
-//               sh 'docker logout https://"${REPO_LOCATION}"-docker.pkg.dev'
-             }
-//             sh 'docker rmi ${IMAGE_NAME}:${IMAGE_TAG}'
-//             echo 'Build docker image Finish'
-           }
-      }
-       }
-     }
+
+    post {
+        success {
+            echo 'Build, push, and deployment successful!'
+        }
+    }
+}
