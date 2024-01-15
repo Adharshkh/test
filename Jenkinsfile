@@ -8,14 +8,20 @@ pipeline {
     IMAGE_NAME = "${REPO_LOCATION}-docker.pkg.dev/${PROJECT}/${REPO_NAME}/${APP_NAME}"
   }
 
-  stages {
-    stage('Pull Git'){
-      when { expression { true } }
-      steps{
-        checkout scm
-      }
-    }
-  }
+      stages {
+        stage('Git checkout') {
+            steps {
+                git branch: 'main', credentialsId: '220d6130-a4a6-4bf0-b696-3785b8ae3321', url: 'https://github.com/Abhin86/Nodejs-Application'
+            }
+        }
+  // stages {
+  //   stage('Pull Git'){
+  //     when { expression { true } }
+  //     steps{
+  //       checkout scm
+  //     }
+  //   }
+  // }
 //     stage('Build docker image') {
 //     when { expression { true } }
 //       steps{
