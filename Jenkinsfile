@@ -43,7 +43,7 @@ pipeline {
 
                 // Deploy Helm chart
                 script {
-                    sh "helm upgrade --install ${HELM_RELEASE_NAME} -n nodejs --create-namespace ."
+                    sh "helm upgrade --install ${HELM_RELEASE_NAME} -n nodejs --create-namespace nodejs-application/"
                 }
             }
         }
