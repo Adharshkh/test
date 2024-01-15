@@ -20,7 +20,7 @@ pipeline {
         stage("Docker Build"){
             steps{ 
                 script{
-                dockerImage = docker.build("abhin86/nodejs:${env.BUILD_NUMBER}")
+                sh 'sudo -u jenkins docker build -t Dockerfile .'
                     }
                 }
             }
