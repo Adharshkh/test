@@ -14,11 +14,11 @@ pipeline {
     stages {
         stage('Checkout from Git'){
             steps{
-                git branch: 'main', url: 'https://github.com/Abhin86/Nodejs-Application.git'
+                git branch: 'main', credentialsId: '220d6130-a4a6-4bf0-b696-3785b8ae3321', url: 'https://github.com/Abhin86/Nodejs-Application.git'
             }
         }
         stage("Docker Build"){
-            steps{
+            steps{ 
                 script{
                     withDockerRegistry(credentialsId: 'e37672bf-062d-4103-af96-bfe6ad538769', toolName: 'docker'){   
                         sh "sudo docker build -t ${IMAGE} ."
