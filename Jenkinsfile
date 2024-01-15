@@ -15,22 +15,29 @@ pipeline {
                 checkout scm
             }
         }
+stage('Docker Build') {
+    	agent any
+      steps {
+      	sh 'docker build us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2:${env.BUILD_NUMBER} -f Dockerfile . '
+      }
+    }
+  }
+}
+        // stage('Build and Push Docker Image') {
+        //     steps {
+        //         // Build Docker image
+        //         script {
+        //             docker.build("us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2:${env.BUILD_NUMBER}" , '-f Dockerfile .')
+        //         }
 
-        stage('Build and Push Docker Image') {
-            steps {
-                // Build Docker image
-                script {
-                    docker.build("us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2:${env.BUILD_NUMBER}" , '-f Dockerfile .')
-                }
-
-                // Push Docker image to Google Artifact Registry
-                script {
-                    docker.withRegistry('https://gcr.io', 'kubernetes2-410610') {
-                        docker.image("${REGISTRY}/${PROJECT_ID}/${APP_NAME}:${env.BUILD_NUMBER}").push()
-                    }
-                }
-            }
-        }
+        //         // Push Docker image to Google Artifact Registry
+        //         script {
+        //             docker.withRegistry('https://gcr.io', 'kubernetes2-410610') {
+        //                 docker.image("${REGISTRY}/${PROJECT_ID}/${APP_NAME}:${env.BUILD_NUMBER}").push()
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Deploy Helm Chart') {
             steps {
