@@ -1,4 +1,5 @@
 pipeline {
+  agent any
   environment {
     PROJECT = "kubernetes2-410610"
     APP_NAME = "nodejs-app"
