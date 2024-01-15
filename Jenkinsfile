@@ -20,7 +20,7 @@ pipeline {
         stage("Docker Build"){
             steps{ 
                 script{
-                sh 'sudo -u jenkins docker build -t Dockerfile .'
+                sh 'docker build -t Dockerfile .'
                     }
                 }
             }
