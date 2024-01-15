@@ -14,6 +14,7 @@ pipeline {
                 git branch: 'main', credentialsId: '220d6130-a4a6-4bf0-b696-3785b8ae3321', url: 'https://github.com/Abhin86/Nodejs-Application'
             }
         }
+      }
   // stages {
   //   stage('Pull Git'){
   //     when { expression { true } }
