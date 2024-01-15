@@ -15,12 +15,21 @@ pipeline {
                 checkout scm
             }
         }
-stage('Docker Build') {
-    	agent any
-      steps {
-      	sh 'sudo -u jenkins docker build -f Dockerfile . '
-      }
-    }
+   stage('Build image') {
+  app = docker.build("us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2")
+}
+stage('Push image') {
+  docker.withRegistry('https://eu.gcr.io', 'gcr:e8784de2-a680-431f-b817-a46befa6ea70') {
+    app.push("${env.BUILD_NUMBER}")
+    app.push("latest")
+  }
+}
+// stage('Docker Build') {
+//     	agent any
+//       steps {
+//       	sh 'sudo -u jenkins docker build -f Dockerfile . '
+//       }
+//     }
 
         // stage('Build and Push Docker Image') {
         //     steps {
@@ -35,25 +44,25 @@ stage('Docker Build') {
         //                 docker.image("${REGISTRY}/${PROJECT_ID}/${APP_NAME}:${env.BUILD_NUMBER}").push()
         //             }
         //         }
-        //     }
-        // }
+    //     //     }
+    //     // }
 
-        stage('Deploy Helm Chart') {
-            steps {
-                // Authenticate with Google Cloud
-                script {
-                    withCredentials([file(credentialsId: 'e8784de2-a680-431f-b817-a46befa6ea70', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
-                        sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
-                    }
-                }
+    //     stage('Deploy Helm Chart') {
+    //         steps {
+    //             // Authenticate with Google Cloud
+    //             script {
+    //                 withCredentials([file(credentialsId: 'e8784de2-a680-431f-b817-a46befa6ea70', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+    //                     sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
+    //                 }
+    //             }
 
-                // Deploy Helm chart
-                script {
-                    sh "helm upgrade --install ${HELM_RELEASE_NAME} -n nodejs --create-namespace nodejs-application/"
-                }
-            }
-        }
-    }
+    //             // Deploy Helm chart
+    //             script {
+    //                 sh "helm upgrade --install ${HELM_RELEASE_NAME} -n nodejs --create-namespace nodejs-application/"
+    //             }
+    //         }
+    //     }
+    // }
 
     post {
         success {
