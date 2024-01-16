@@ -56,7 +56,7 @@ agent any
          stage('Deploy Helm Chart') {
             steps {
                 script {
-                    sh 'gcloud components install kubectl'
+                    sh 'yum install google-cloud-sdk-gke-gcloud-auth-plugin && gcloud components install kubectl'
                     sh "helm upgrade --install node-app ./nodejs-application -n nodejs --create-namespace"                }
             }
         }
