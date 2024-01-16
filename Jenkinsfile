@@ -32,7 +32,7 @@ agent any
                         
                         // Build the Docker image
                         sh "sudo -u jenkins docker build -t \${REPOSITORY_NAME}:\${TAG} ."
-                        sh "sudo -u jenkins docker push \${DOCKER_USERNAME}/\${REPOSITORY_NAME}:\${TAG}"
+                        sh "sudo -u jenkins docker push \${REPOSITORY_NAME}:\${TAG}"
                     }
                 }
             }
