@@ -56,7 +56,7 @@ agent any
          stage('Deploy Helm Chart') {
             steps {
                 script {
-                    sh "helm upgrade --install node-app ./nodejs-application -n nodejs --create-namespace"                }
+                    sh "helm upgrade --install node-app ./nodejs-application -n nodejs --create-namespace --set image.tag=$TAG"                }
             }
         }
     }
