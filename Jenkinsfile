@@ -20,7 +20,7 @@ agent any
         stage("Docker Build"){
             steps{ 
                 script{
-                sh 'docker build -t Dockerfile .'
+                sh 'sudo -u jenkins docker build -t Dockerfile .'
                     }
                 }
             }
