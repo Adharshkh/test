@@ -53,19 +53,18 @@ agent any
                 
             }
         }
+         stage('Deploy Helm Chart') {
+            steps {
+                script {
+                    sh "helm upgrade --install node-app ./nodejs-application -n nodejs --create-namespace"                }
+            }
+        }
     }
 
 }
         
        
 
-    //     stage('Deploy Helm Chart') {
-    //         steps {
-    //             script {
-    //                 sh 'kubectl create ns ${HELM_NAMESPACE} || echo "namespace already created" '
-    //                 sh "helm upgrade --install ${HELM_RELEASE_NAME} ${HELM_CHART_PATH} --set image.tag=${TAG} --namespace=${HELM_NAMESPACE} --wait"
-    //             }
-    //         }
-    //     }
-    // }
+       
+    
 

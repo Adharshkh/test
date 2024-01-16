@@ -5,7 +5,8 @@
 replicaCount: 1
 
 image:
-  repository: us-central1-docker.pkg.dev/kubernetes2-410610/nodejs/nodejs-image
+#  repository: us-central1-docker.pkg.dev/kubernetes2-410610/nodejs/nodejs-image
+  repository: abhin86/abhin86
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
