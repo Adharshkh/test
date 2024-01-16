@@ -10,7 +10,7 @@ agent any
         HELM_CHART_PATH = 'nodels-application/'
         HELM_RELEASE_NAME = 'nodejs'
         HELM_NAMESPACE = 'nodejs'
-        DOCKER_HUB_CREDENTIALS = credentials('220d6130-a4a6-4bf0-b696-3785b8ae3321')
+        DOCKER_HUB_CREDENTIALS = credentials('e37672bf-062d-4103-af96-bfe6ad538769')
         REPOSITORY_NAME = 'abhin86'
 
     }
