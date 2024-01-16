@@ -32,22 +32,23 @@ agent any
                         
                         // Build the Docker image
                         sh "sudo -u jenkins docker build -t \${REPOSITORY_NAME}:\${TAG} ."
+                        sh "sudo -u jenkins docker push \${REPOSITORY_NAME}:\${TAG}"
                     }
                 }
             }
         }
-        stage {
-            steps {
-                script {
-                    withDockerRegistry(credentialsId: 'e37672bf-062d-4103-af96-bfe6ad538769', toolName: 'docker') {
-                        // Push tagged Docker image to the registry
-                        sh "sudo -u jenkins docker push abhin86/${REPOSITORY_NAME}:\${TAG}"
-        }
-                }
-    }
-        }
     }
 }
+        // stage("Docker Build"){
+        //     steps{ 
+        //         script{
+        //         sh 'sudo -u jenkins docker login -u abhin86 -p '
+        //         sh 'sudo -u jenkins docker build -t abhin86/${IMAGE} .'
+        //             }
+        //          }
+        //         }
+        //     }
+        
 
         // stage(' Trivy Scan') {
         //     steps {
