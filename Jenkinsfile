@@ -19,8 +19,9 @@ agent any
         }
         stage("Docker Build"){
             steps{ 
-                 withDockerRegistry(credentialsId: 'e37672bf-062d-4103-af96-bfe6ad538769', toolName: 'docker'){
+                withCredentials(credentialsId: 'e37672bf-062d-4103-af96-bfe6ad538769', variable: 'secretFile')
                 script{
+                sh 'sudo -u jenkins docker login -u abhin86 -p $secretFile'
                 sh 'sudo -u jenkins docker build -t abhin86/${IMAGE} .'
                     }
                  }
@@ -91,4 +92,4 @@ agent any
             }
         }
     }
-}
+
