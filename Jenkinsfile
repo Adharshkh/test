@@ -19,9 +19,11 @@ agent any
         }
         stage("Docker Build"){
             steps{ 
+                 withDockerRegistry(credentialsId: 'e37672bf-062d-4103-af96-bfe6ad538769', toolName: 'docker'){
                 script{
                 sh 'sudo -u jenkins docker build -t abhin86/${IMAGE} .'
                     }
+                 }
                 }
             }
         
