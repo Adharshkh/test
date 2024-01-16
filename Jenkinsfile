@@ -28,7 +28,7 @@ agent any
                         // Login to Docker with credentials and --password-stdin
                         // sh "echo \${DOCKER_PASSWORD} | sudo -u jenkins docker login -u \${DOCKER_USERNAME} --password-stdin "
                         sh "echo $secretFile >> cred.json"
-                        sh "gcloud auth activate-service-account --key-file=cred.json"
+                        sh "gcloud auth activate-service-account --key-file=$secretFile"
                         // Build the Docker image
                         sh "sudo -u jenkins docker build -t us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2/nodejs-image:$SHORT_SHA ."
                         // sh "sudo -u jenkins docker tag \${REPOSITORY_NAME}/\${REPOSITORY_NAME}:\${TAG} \${REPOSITORY_NAME}/\${REPOSITORY_NAME}:\${TAG}"
