@@ -28,7 +28,7 @@ agent any
                     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '220d6130-a4a6-4bf0-b696-3785b8ae3321', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]) {
                         
                         // Login to Docker with credentials and --password-stdin
-                        sh "echo \${DOCKER_PASSWORD} | docker login -u \${DOCKER_USERNAME} --password-stdin https://index.docker.io/v1/"
+                        sh "echo \${DOCKER_PASSWORD} | sudo -u jenkins docker login -u \${DOCKER_USERNAME} --password-stdin https://index.docker.io/v1/"
                         
                         // Build and push the Docker image
                         sh "sudo -u jenkins docker build -t \${REPOSITORY_NAME}:\${TAG} ."
