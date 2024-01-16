@@ -34,64 +34,20 @@ agent any
                         sh "sudo -u jenkins docker build -t \${REPOSITORY_NAME}/\${REPOSITORY_NAME}:\${TAG} ."
                         sh "sudo -u jenkins docker tag \${REPOSITORY_NAME}/\${REPOSITORY_NAME}:\${TAG} \${REPOSITORY_NAME}/\${REPOSITORY_NAME}:\${TAG}"
                         sh "sudo -u jenkins docker push \${REPOSITORY_NAME}/\${REPOSITORY_NAME}:\${TAG}"
+                        sh 'echo " cleaning Docker Images"'
+                        sh 'sudo -u jenkins docker rmi -f \$(sudo -u jenkins docker images -q)'
                     }
                 }
             }
         }
     }
 }
-        // stage("Docker Build"){
-        //     steps{ 
-        //         script{
-        //         sh 'sudo -u jenkins docker login -u abhin86 -p '
-        //         sh 'sudo -u jenkins docker build -t abhin86/${IMAGE} .'
-        //             }
-        //          }
-        //         }
-        //     }
-        
-
-        // stage(' Trivy Scan') {
-        //     steps {
-        //         //  trivy output template 
-        //         sh 'sudo curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl > html.tpl'
-
-        //         // Scan all vuln levels
-        //         sh 'sudo mkdir -p reports'
-        //         sh 'sudo trivy image --format template --template @./html.tpl -o reports/trivy-report.html ${IMAGE}:latest'
-        //         publishHTML target : [
-        //             allowMissing: true,
-        //             alwaysLinkToLastBuild: true,
-        //             keepAll: true,
-        //             reportDir: 'reports',
-        //             reportFiles: 'trivy-report.html',
-        //             reportName: 'Trivy Scan',
-        //             reportTitles: 'Trivy Scan'
-        //         ]
-
-        //         // Scan again and fail on CRITICAL vulns
-        //         // sh 'trivy image --ignore-unfixed --vuln-type os,library --exit-code 1 --severity CRITICAL ${IMAGE}:latest '
-
+        // stage("Docker Clean up "){
+        //     steps{
+        //          sh 'echo " cleaning Docker Images"'
+        //          sh 'sudo -u jenkins docker rmi -f \$(sudo docker images -q)'
         //     }
         // }
-    //     stage("Docker Push"){
-    //         steps{
-    //             script{
-    //                 withDockerRegistry(credentialsId: 'e37672bf-062d-4103-af96-bfe6ad538769', toolName: 'docker'){   
-    //                     sh "sudo -u jenkins docker tag ${IMAGE} abhin86/${IMAGE}:${TAG} "
-    //                     sh "sudo -u jenkins docker push abhin86/${IMAGE}:${TAG} "
-    //                     sh "sudo -u jenkins docker tag ${IMAGE} abdulfayis/${IMAGE}:latest "
-    //                     sh "sudo -u jenkins docker push abhin86/${IMAGE}:latest "
-    //                 }
-    //             }
-    //         }
-    //     }
-        stage("Docker Clean up "){
-            steps{
-                 sh 'echo " cleaning Docker Images"'
-                 sh 'sudo -u jenkins docker rmi -f \$(sudo docker images -q)'
-            }
-        }
     //     stage("Helm install "){
     //         steps{
     //              sh "curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3"
