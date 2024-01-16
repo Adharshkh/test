@@ -30,7 +30,7 @@ agent any
                         sh "gcloud auth activate-service-account --key-file=$secretFile"
                         // Build the Docker image
                         sh "sudo -u jenkins docker build -t us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2/nodejs-image:$TAG ."
-                        sh "sudo -u jenkins docker tag us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2/nodejs-image:$TAG us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2/nodejs-image:$TAG}"
+                        sh "sudo -u jenkins docker tag us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2/nodejs-image:$TAG us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2/nodejs-image:$TAG"
                         sh "sudo -u jenkins docker push us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2/nodejs-image:$TAG"
                         sh 'echo " cleaning Docker Images"'
                         sh 'sudo -u jenkins docker rmi -f \$(sudo -u jenkins docker images -q)'
