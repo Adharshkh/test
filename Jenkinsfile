@@ -47,17 +47,18 @@ agent any
                  sh "./get_helm.sh"
             }
         }
+            stage('GKE Authentication') {
+            steps{
+                    sh "gcloud container clusters get-credentials ${CLUSTER_NAME} --zone ${LOCATION} --project ${PROJECT_ID}"
+                
+            }
+        }
     }
 
 }
         
        
-    //     stage('GKE Authentication') {
-    //         steps{
-    //                 sh "gcloud container clusters get-credentials ${CLUSTER_NAME} --zone ${LOCATION} --project ${PROJECT_ID}"
-                
-    //         }
-    //     }
+
     //     stage('Deploy Helm Chart') {
     //         steps {
     //             script {
