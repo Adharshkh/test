@@ -86,12 +86,12 @@ agent any
     //             }
     //         }
     //     }
-    //     stage("Docker Clean up "){
-    //         steps{
-    //              sh 'echo " cleaning Docker Images"'
-    //              sh 'sudo -u jenkins docker rmi -f \$(sudo docker images -q)'
-    //         }
-    //     }
+        stage("Docker Clean up "){
+            steps{
+                 sh 'echo " cleaning Docker Images"'
+                 sh 'sudo -u jenkins docker rmi -f \$(sudo docker images -q)'
+            }
+        }
     //     stage("Helm install "){
     //         steps{
     //              sh "curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3"
