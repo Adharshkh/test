@@ -27,10 +27,9 @@ agent any
                     withCredentials([file(credentialsId: 'e8784de2-a680-431f-b817-a46befa6ea70', variable: 'secretFile')]) {
                         // Login to Docker with credentials and --password-stdin
                         // sh "echo \${DOCKER_PASSWORD} | sudo -u jenkins docker login -u \${DOCKER_USERNAME} --password-stdin "
-                        sh "echo $secretFile >> cred.json"
                         sh "gcloud auth activate-service-account --key-file=$secretFile"
                         // Build the Docker image
-                        sh "sudo -u jenkins docker build -t us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2/nodejs-image:$SHORT_SHA ."
+                        sh "sudo -u jenkins docker build -t us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2/nodejs-image:$TAG ."
                         // sh "sudo -u jenkins docker tag \${REPOSITORY_NAME}/\${REPOSITORY_NAME}:\${TAG} \${REPOSITORY_NAME}/\${REPOSITORY_NAME}:\${TAG}"
                         // sh "sudo -u jenkins docker push \${REPOSITORY_NAME}/\${REPOSITORY_NAME}:\${TAG}"
                         // sh 'echo " cleaning Docker Images"'
