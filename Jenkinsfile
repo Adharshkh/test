@@ -41,20 +41,16 @@ agent any
             }
         }
     }
+     stage("Helm install "){
+            steps{
+                 sh "curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3"
+                 sh "chmod 700 get_helm.sh"
+                 sh "./get_helm.sh"
+            }
+        }
 }
-        // stage("Docker Clean up "){
-        //     steps{
-        //          sh 'echo " cleaning Docker Images"'
-        //          sh 'sudo -u jenkins docker rmi -f \$(sudo docker images -q)'
-        //     }
-        // }
-    //     stage("Helm install "){
-    //         steps{
-    //              sh "curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3"
-    //              sh "chmod 700 get_helm.sh"
-    //              sh "./get_helm.sh"
-    //         }
-    //     }
+        
+       
     //     stage('GKE Authentication') {
     //         steps{
     //                 sh "gcloud container clusters get-credentials ${CLUSTER_NAME} --zone ${LOCATION} --project ${PROJECT_ID}"
