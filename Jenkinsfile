@@ -1,11 +1,5 @@
 pipeline {
-agent { 
-   docker { 
-      image 'Ubuntu:trusty'
-      label 'ubuntu_maven'
-      args '-v /tmp:/home/dev'
-   }
-}
+agent any
     environment {
         IMAGE = 'nodejs'
         TAG = "${BUILD_NUMBER}"
