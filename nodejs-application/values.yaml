@@ -9,7 +9,7 @@ image:
   # repository: abhin86/abhin86
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: 2
+  tag: 3
 
 imagePullSecrets: []
 nameOverride: ""
