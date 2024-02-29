@@ -9,7 +9,7 @@ image:
   # repository: abhin86/abhin86
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: 3
+  tag: 8
 
 imagePullSecrets: []
 nameOverride: ""
@@ -39,16 +39,16 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 8080
+  port: 80
 
 ingress:
   enabled: true
   className: ""
-  annotations: {
+  annotations: 
       kubernetes.io/ingress.class: "alb",
       alb.ingress.kubernetes.io/scheme: internet-facing,
-      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 8080}]'
-  }
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+      alb.ingress.kubernetes.io/target-type: "ip"
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
