@@ -5,11 +5,11 @@
 replicaCount: 1
 
 image:
-  repository: us-central1-docker.pkg.dev/kubernetes2-410610/nodejs2/nodejs-image
+  repository: 039033235676.dkr.ecr.us-east-2.amazonaws.com/spring-app-dev
   # repository: abhin86/abhin86
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: 2
 
 imagePullSecrets: []
 nameOverride: ""
@@ -38,19 +38,19 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: LoadBalancer
-  port: 8080
+  type: clusterIP
+  port: 80
 
 ingress:
   enabled: false
   className: ""
   annotations: {
-      kubernetes.io/ingress.class: "gce"
+      kubernetes.io/ingress.class: "alb"
   }
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: www.achuabhin.tech
+    - host: thriftydaddy.online
       paths:
         - path: /
           pathType: Prefix
